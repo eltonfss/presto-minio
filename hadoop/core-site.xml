@@ -107,7 +107,7 @@
 
     <property>
         <name>fs.s3a.endpoint</name>
-        <value>https://play.min.io</value>
+        <value>http://minio:9000</value>
     </property>
 
     <property>

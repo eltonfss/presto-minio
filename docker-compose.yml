@@ -1,5 +1,17 @@
 version: '3'
 services:
+  minio:
+    hostname: minio
+    image: minio/minio
+    command: server /data/minio --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio123
+    volumes: 
+      - ./minio-data:/data/minio
   presto:
     hostname: presto
     image: 'starburstdata/presto:350-e.7'
@@ -21,9 +33,11 @@ services:
   mc-job:
     image: 'minio/mc:latest'
     environment:
-      MC_HOST_presto: "https://minio:minio123@play.min.io"
+      MC_HOST_presto: "http://minio:minio123@minio:9000"
     volumes:
       - './minio/data:/minio'
+    depends_on:
+      - minio
     entrypoint: |
       /bin/bash -c "
       /usr/bin/mc mb --quiet presto/customer-data-text;
